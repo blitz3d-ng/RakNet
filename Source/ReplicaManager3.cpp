@@ -3,7 +3,7 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
@@ -45,7 +45,7 @@ int Connection_RM3::Replica3LSRComp( Replica3 * const &replica3, LastSerializati
 		*/
 
 	// 7/28/2013 - If GetNetworkID chagned during runtime, the list would be out of order and lookup would always fail or go out of bounds
-	// I remember before that I could not directly compare 
+	// I remember before that I could not directly compare
 	if (replica3->referenceIndex < data->replica->referenceIndex)
 		return -1;
 	if (replica3->referenceIndex > data->replica->referenceIndex)
@@ -138,7 +138,7 @@ void ReplicaManager3::AutoCreateConnectionList(
 {
 	for (unsigned int index=0; index < participantListIn.Size(); index++)
 	{
-		if (GetConnectionByGUID(participantListIn[index], worldId)==false)
+		if (GetConnectionByGUID(participantListIn[index], worldId)==NULL)
 		{
 			Connection_RM3 *connection = AllocConnection(rakPeerInterface->GetSystemAddressFromGuid(participantListIn[index]), participantListIn[index]);
 			if (connection)
@@ -160,7 +160,7 @@ bool ReplicaManager3::PushConnection(RakNet::Connection_RM3 *newConnection, Worl
 		return false;
 	// Was this intended?
 	RakAssert(newConnection->GetRakNetGUID()!=rakPeerInterface->GetMyGUID());
-	
+
 	RakAssert(worldsArray[worldId]!=0 && "World not in use");
 	RM3World *world = worldsArray[worldId];
 
@@ -550,7 +550,7 @@ void ReplicaManager3::Clear(bool deleteWorlds)
 			worldsArray[worldsList[i]->worldId]=0;
 			delete worldsList[i];
 		}
-	} 
+	}
 	if (deleteWorlds)
 		worldsList.Clear(false, _FILE_AND_LINE_);
 }
@@ -577,7 +577,7 @@ void ReplicaManager3::RM3World::Clear(ReplicaManager3 *replicaManager3)
 		for (unsigned int i=0; i < connectionList.Size(); i++)
 			connectionList[i]->ClearDownloadGroup(replicaManager3->GetRakPeerInterface());
 	}
-	
+
 	for (unsigned int i=0; i < userReplicaList.Size(); i++)
 	{
 		userReplicaList[i]->replicaManager=0;
@@ -1331,7 +1331,7 @@ PluginReceiveResult ReplicaManager3::OnDownloadComplete(Packet *packet, unsigned
 		for (i=0; i < connection->downloadGroup.Size(); i++)
 			rakPeerInterface->PushBackPacket(connection->downloadGroup[i],false);
 
-		// Push this one to be last too. It will be processed again, but the second time 
+		// Push this one to be last too. It will be processed again, but the second time
 		// groupConstructionAndSerialize will be false and downloadGroup will be empty, so it will go past this block
 		connection->downloadGroup.Clear(__FILE__,__LINE__);
 		rakPeerInterface->PushBackPacket(packet,false);
